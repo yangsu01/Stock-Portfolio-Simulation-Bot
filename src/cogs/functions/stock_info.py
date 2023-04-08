@@ -31,7 +31,7 @@ def get_history(ticker: str, period: str) -> pd.DataFrame:
         returns.insert(0,0)
         history['Returns'] = returns
 
-        if not returns or returns is [0]:
+        if returns == [] or returns == [0]:
             raise Exception('Ticker not found')
         
         return history
@@ -74,7 +74,7 @@ def plot_ticker(ticker: str, period='ytd') -> None:
         raise e
     
 
-def get_price(ticker: str) -> int:
+def get_price(ticker: str) -> float:
     """Checks the current price of a stock
         
         Args:
