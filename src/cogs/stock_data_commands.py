@@ -22,7 +22,6 @@ class StockData(commands.Cog):
             await ctx.send(file=discord.File(PRICE_PLOT_PATH))
 
         except Exception as e:
-            print(e)
             await ctx.send(e)
 
     @commands.command(name='price',
@@ -33,8 +32,7 @@ class StockData(commands.Cog):
             await ctx.send(f'Current price of **{ticker}: ${round(get_price(ticker), 2)}**')
 
         except Exception as e:
-            print(e)
-            await ctx.send('Invalid ticker')
+            await ctx.send(e)
 
     @commands.command(name='stonknews',
                       help='- Sends a related news article for a given ticker')
@@ -92,7 +90,6 @@ class StockData(commands.Cog):
             await ctx.send(file=discord.File(GROWTH_PLOT_PATH))
 
         except Exception as e:
-            print(e)
             await ctx.send(e)
 
 
