@@ -48,7 +48,7 @@ async def on_member_join(member):
 
 
 async def load():
-    for filename in os.listdir('./cogs'):
+    for filename in os.listdir('C:/Users/Yang/Documents/Projects/discord bot/src/cogs'):
         if filename.endswith('.py'):
             await bot.load_extension(f'cogs.{filename[:-3]}')
 
