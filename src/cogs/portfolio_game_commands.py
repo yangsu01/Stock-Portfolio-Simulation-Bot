@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 
 from .functions.portfolio_game import (check_user_exists, create_user_profile, profile_summary,
-                                       buy_stock, sell_stock, get_price, get_available_funds)
+                                       buy_stock, sell_stock, get_available_funds)
+from .functions.stock_info import get_price
 
 # constants
 from .functions.constants import STARTING_FUNDS
@@ -64,7 +65,6 @@ class PortfolioGame(commands.Cog):
                 await ctx.send(f'{username} does not have a profile!')
 
         except Exception as e:
-            print(e)
             await ctx.send(e)
     
     @commands.command(name='buy',
@@ -74,10 +74,22 @@ class PortfolioGame(commands.Cog):
         try:
             price = get_price(ticker)
             funds = get_available_funds(ctx.message.author.name)
-            await ctx.send(f"""> The current price of {ticker} is ${price}.
+            await ctx.send(f"""> The current price of {ticker} is ${round(get_price(ticker), 2)}.
             > You have ${funds} available to be invested.
             > With this money, you can buy a maximum of {int(funds/price)} shares.
-            > How many shares would you like to buy? (N to cancel transaction)""")
+            > How many shares would you like to buy? (enter a whole number... 'no' to cancel transaction)""")
+
+            response = await self.bot.wait_for('message',
+                                               check=lambda message:message.author == ctx.author and message.channel.id == ctx.channel.id,
+                                               timeout=20.0)
+            
+            if response.content in ['n', 'N', 'No', 'NO']:
+                await ctx.send('Transaction Cancelled')
+            elif int(response.content) > int(funds/price):
+                await ctx.send(f'You cant afford {int(response.content)} shares right now')
+            else:
+                #buy_stock(ctx.message.author.name, ticker, int(response.content), price)
+                await ctx.send('Transaction Complete')
 
         except Exception as e:
             await ctx.send(e)
