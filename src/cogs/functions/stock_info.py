@@ -89,10 +89,12 @@ def get_price(ticker: str) -> float:
         
         if data.fast_info.last_price is None:
             raise Exception('Ticker not found')
+        print (data.fast_info.last_price)
         return data.fast_info.last_price
     
     except Exception as e:
-        raise e
+        print(e)
+        raise Exception('Ticker not found')
 
 
 def get_info(ticker: str) -> dict:
