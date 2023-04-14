@@ -76,26 +76,24 @@ def profile_summary(username: str) -> dict:
     
     return portfolio_data[username]
 
-def get_price(ticker: str) -> int:
-    """Checks the current price of a stock
-        
-        Args:
-            ticker (str): the stocks ticker
-        
-        Return:
-            int: price of stock
-    """
-
-    try:
-        data = yf.Ticker(ticker)
-
-        return data.fast_info.last_price
-    
-    except Exception as e:
-        raise e
 
 def get_available_funds(user: str) -> float:
-    return
+    """Retrieves the funds available for a given user
+        
+        Args:
+            user (str): users name
+        
+        Return:
+            float: available funds in users account
+    """
+
+    with open(PORTFOLIO_DATA_PATH, 'r') as read_users:
+        user_data = json.load(read_users)
+
+        if user not in user_data:
+            raise Exception(f'{user} does not have a portfolio!')
+        
+    return user_data.get(user).get('funds_available')
 
 def record_transaction():
     return
