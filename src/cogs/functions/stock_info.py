@@ -87,8 +87,8 @@ def get_price(ticker: str) -> float:
     try:
         data = yf.Ticker(ticker)
         
-        if data.fast_info.last_price is None:
-            raise Exception('Ticker not found')
+        # if data.fast_info.last_price is None:
+        #     raise Exception('Ticker not found')
         print (data.fast_info.last_price)
         return data.fast_info.last_price
     
