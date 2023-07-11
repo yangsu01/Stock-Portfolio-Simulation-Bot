@@ -2,10 +2,10 @@ from datetime import date
 import discord
 from discord.ext import commands
 
-from .functions.stock_info import (plot_ticker, get_info, stock_worth, get_news, get_price)
+from functions.stock_info import (plot_ticker, get_info, stock_worth, get_news, get_price)
 
 #constants
-from .functions.constants import PRICE_PLOT_PATH, GROWTH_PLOT_PATH, VALID_PERIODS
+from functions.constants import PRICE_PLOT_PATH, GROWTH_PLOT_PATH, VALID_PERIODS
 
 class StockData(commands.Cog):
     def __init__(self, bot) -> None:
@@ -47,25 +47,25 @@ class StockData(commands.Cog):
             print(e)
             await ctx.send('No news available for ticker')
 
-    @commands.command(name='stonksum',
-                      help='- summary of a ticker')
-    async def summary(self, ctx, 
-                      ticker: str=commands.parameter(description='- Stock ticker')):
-        try:
-            summary = get_info(ticker)
-            await ctx.send(f"""```{date.today()} summary of {ticker} (prices in {summary['currency']})
-            Current price: {round(summary['lastPrice'],2)}
-            Todays high: {round(summary['dayHigh'],2)}
-            Todays Low: {round(summary['dayLow'])}
-            Fifty day average: {round(summary['fiftyDayAverage'],2)}
-            Market cap: {round(summary['marketCap']/(10**9),2)} Billion
-            Yearly High: {round(summary['yearHigh'],2)}
-            Yearly Low: {round(summary['yearLow'],2)}
-            Yearly Change: {100*round(summary['yearChange'],2)}%```""")
+    # @commands.command(name='stonksum',
+    #                   help='- summary of a ticker')
+    # async def summary(self, ctx, 
+    #                   ticker: str=commands.parameter(description='- Stock ticker')):
+    #     try:
+    #         summary = get_info(ticker)
+    #         await ctx.send(f"""```{date.today()} summary of {ticker} (prices in {summary['currency']})
+    #         Current price: {round(summary['lastPrice'],2)}
+    #         Todays high: {round(summary['dayHigh'],2)}
+    #         Todays Low: {round(summary['dayLow'])}
+    #         Fifty day average: {round(summary['fiftyDayAverage'],2)}
+    #         Market cap: {round(summary['marketCap']/(10**9),2)} Billion
+    #         Yearly High: {round(summary['yearHigh'],2)}
+    #         Yearly Low: {round(summary['yearLow'],2)}
+    #         Yearly Change: {100*round(summary['yearChange'],2)}%```""")
 
-        except Exception as e:
-            print(e)
-            await ctx.send('Summary not available')
+    #     except Exception as e:
+    #         print(e)
+    #         await ctx.send('Summary not available')
 
     @commands.command(name='stonkworth',
                       help='- What an investment in the past would be worth today...')

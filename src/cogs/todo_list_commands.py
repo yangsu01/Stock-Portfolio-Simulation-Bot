@@ -1,7 +1,7 @@
 from datetime import date
 from discord.ext import commands
 
-from .functions.todo_list import get_list, add_item, mark_complete
+from functions.todo_list import get_list, add_item, mark_complete
 
 class ToDoList(commands.Cog):
     def __init__(self, bot) -> None:
