@@ -17,13 +17,14 @@ class UserProfile:
 
 
 class Transaction:
-    def __init__(self, username: str, ticker: str, price: float, shares: int, status: str) -> None:
+    def __init__(self, username: str, ticker: str, price: float, shares: int, status: str, remaining_funds: float) -> None:
         self.date = str(date.today())
         self.username = username
         self.ticker = ticker
         self.price = price
         self.shares = shares
         self.status = status
+        self.remaining_funds = remaining_funds
 
 
 def check_user_exists(username: str) -> bool:
@@ -79,7 +80,7 @@ def get_current_prices(tickers: list) -> dict:
             dict: dictionary of tickers and their current prices
     """
     tickers = [ticker.upper() for ticker in tickers]
-    response = yf.Tickers(' '.join(tickers))
+    response = yf.Tickers(tickers)
 
     return {ticker: response.tickers[ticker].info['currentPrice'] for ticker in tickers}
 
@@ -127,8 +128,13 @@ def record_transaction(username: str, ticker: str, price: float, shares: int, st
             shares (int): the amount of shares in transaction
             status (str): the status of the transaction (buy/sell)
     """
+    profile = get_profile(username)
+
+    # assumes 'buy stock' has already been called so the remaining funds is already updated
+    remaining_funds = profile['funds_available']
+
     transactions = db.getDb(TRANSACTIONS_PATH)
-    transactions.add(Transaction(username, ticker.upper(), price, shares, status).__dict__)
+    transactions.add(Transaction(username, ticker.upper(), price, shares, status, remaining_funds).__dict__)
 
 
 def buy_stock(username: str, ticker: str, amount: int, price: float) -> None:
@@ -144,7 +150,7 @@ def buy_stock(username: str, ticker: str, amount: int, price: float) -> None:
 
     profile = get_profile(username)
     if profile:
-        new_funds = profile['funds_available'] - (amount * price)
+        new_funds = round(profile['funds_available'] - (amount * price), 2)
         portfolio = profile['portfolio']
 
         # ticker is in portfolio
@@ -214,7 +220,7 @@ def sell_stock(username: str, ticker: str, amount: int, price: float) -> None:
     ticker = ticker.upper()
     profile = get_profile(username)
     if profile:
-        new_funds = profile['funds_available'] + (amount * price)
+        new_funds = round(profile['funds_available'] + (amount * price), 2)
         portfolio = profile['portfolio']
 
         # ticker is in portfolio
@@ -242,24 +248,53 @@ def sell_stock(username: str, ticker: str, amount: int, price: float) -> None:
         raise Exception('User does not exist')
 
 
-def get_user_history(username: str) -> list:
-    pass
+def get_performance_history(username: str) -> pd.DataFrame:
+    """Gets the historical performance of a users portfolio
+    
+        Args:
+            user (str): users name
+        
+        Return:
+            pd.DataFrame: dataframe of the portfolio performance history"""
+    transactions = db.getDb(TRANSACTIONS_PATH).getByQuery({'username': username})
+    
+    creation_date = get_profile(username)['create_date']
+
+    # get all unique tickers in transactions
+    tickers = list(set([transaction['ticker'] for transaction in transactions]))
+
+    history = yf.download(tickers, start=creation_date, end=date.today())
+
+    print(history)
 
 
 def plot_history(username: str) -> None:
     pass
 
 
-def leaderboard() -> dict:
-    pass
+def get_leaderboard() -> dict:
+    """Generates a leaderboard of all users and their current portfolio values
+    
+        Return:
+            dict: dictionary of all users and their current portfolio values"""
+    profiles = db.getDb(PORTFOLIO_DATA_PATH).getAll()
+    leaderboard = {}
+    for profile in profiles:
+        stocks_owned = list(profile['portfolio'].keys())
+        prices = get_current_prices(stocks_owned)
+        leaderboard[profile['username']] = round(profile['funds_available'] + sum([profile['portfolio'][ticker]['shares']*prices[ticker] for ticker in profile['portfolio']]),2)
+    
+    return leaderboard
 
 
 def day_performance() -> dict:
     pass
 
+def plot_comparison() -> None:
+    pass
+
 if __name__ == "__main__":
-    ticker = yf.Tickers('AAPL')
-    print(ticker.tickers.AAPL.info)
+    get_performance_history('billjohn')
 
     pass
     

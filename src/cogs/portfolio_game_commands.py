@@ -6,7 +6,7 @@ import dataframe_image as dfi
 import datetime as dt
 
 from functions.portfolio_game import (check_user_exists, create_user_profile, profile_summary,
-                                       buy_stock, sell_stock, get_available_funds, check_user_owns_stock, get_stock_info)
+                                       buy_stock, sell_stock, get_available_funds, check_user_owns_stock, get_stock_info, get_leaderboard)
 from functions.stock_info import get_price
 
 # constants
@@ -74,14 +74,15 @@ class PortfolioGame(commands.Cog):
                     data.append([portfolio[ticker]['name'],
                                 ticker,
                                 portfolio[ticker]['currency'],
+                                portfolio[ticker]['shares'],
                                 round(average_price, 2),
                                 round(current_price, 2),
-                                round((current_price-average_price)/average_price, 2),
+                                round((current_price-average_price)/average_price*100, 2),
                                 round((current_price-average_price)*num_shares, 2),
                                 round(current_price*num_shares, 2)
                     ])
 
-                columns = ['Name', 'Currency', 'Ticker', 'Average Price', 'Market Price', 'Change (%)', 'Total Change', 'Market Value']
+                columns = ['Name', 'Ticker', 'Currency', 'Shares', 'Average Price', 'Market Price', 'Change (%)', 'Total Change', 'Market Value']
                 df = pd.DataFrame(data, columns=columns).set_index('Name')
                 dfi.export(df, STOCK_TABLE_PATH)
                 
@@ -166,6 +167,25 @@ class PortfolioGame(commands.Cog):
         except Exception as e:
             await ctx.send(e)
 
+    # leaderboard
+    @commands.command(name='rankings',
+                      help='- see how you stack up against the competition!')
+    async def rankings(self, ctx):
+        try:
+            response = f"Here are the current rankings as of {dt.datetime.now().strftime('%A %b %d %Y, %H:%M:%S')}\n\n"
+            rank = get_leaderboard()
+
+            sorted_items = sorted(rank.items(), key=lambda x: x[1], reverse=True)
+            for i, (name, value) in enumerate(sorted_items):
+                response += f"> {i+1}. {name} - ${value} \n"
+
+            message = discord.Embed(color=0xa3a3ff,
+                                        title=":sparkles: Portfolio Value Leaderboard :sparkles:",
+                                        description=response)
+            
+            await ctx.send(embed=message)
+        except Exception as e:
+            await ctx.send(e)
 
 async def setup(bot):
     await bot.add_cog(PortfolioGame(bot))
