@@ -12,12 +12,12 @@ class GeneralCommands(commands.Cog):
         self._last_member = None
 
     @commands.command(name='hello',
-                      help='- bot says hello')
+                      help='- bot says hello. example: $hello')
     async def hello(self, ctx):
         await ctx.send('hello sexy')
 
     @commands.command(name='replay',
-                      help='- sends a nutty video')
+                      help='- sends a replay. example: $replay')
     async def replay(self, ctx):
         try:
             await ctx.send(file=discord.File(f"{VIDEO_PATH}{random.choice([x for x in os.listdir(VIDEO_PATH) if os.path.isfile(os.path.join(VIDEO_PATH, x))])}"))

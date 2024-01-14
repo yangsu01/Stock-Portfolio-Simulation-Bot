@@ -6,7 +6,6 @@ INCLUDE_FIELDS = ['longName', 'financialCurrency', 'lastPrice', 'dayHigh', 'dayL
 
 # used in portfolio game
 PORTFOLIO_DATA_PATH = 'C:/Users/Yang/Documents/Projects/discord bot/user_data/portfolios.json'
-# USER_DATA_PATH = 'C:/Users/Yang/Documents/Projects/discord bot/user_data/users.json'
 TRANSACTIONS_PATH = 'C:/Users/Yang/Documents/Projects/discord bot/user_data/transactions.json'
 STARTING_FUNDS = 10000
 

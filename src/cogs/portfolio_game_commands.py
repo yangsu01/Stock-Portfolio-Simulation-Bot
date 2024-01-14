@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import pandas as pd
-import numpy as np
 import dataframe_image as dfi
 import datetime as dt
 
@@ -20,7 +19,7 @@ class PortfolioGame(commands.Cog):
 
     # rules of the game
     @commands.command(name='rule',
-                      help='- Rules of the game!')
+                      help='- Rules of the game! example: $rule')
     async def sim_rule(self, ctx):
         rules = f"""Create an investment portfolio and watch it grow!
         Type command: '***$create***' to initialize your profile.
@@ -38,7 +37,7 @@ class PortfolioGame(commands.Cog):
 
     # create user profile
     @commands.command(name='create',
-                      help='- creates a portfolio for the simulation :)')
+                      help='- creates a portfolio for the simulation :). example: $create')
     async def create_port(self, ctx):
         try:
             if create_user_profile(ctx.message.author.name):
@@ -50,7 +49,7 @@ class PortfolioGame(commands.Cog):
 
     # summarizes user portfolio
     @commands.command(name='summary',
-                      help='- summarizes a users portfolio')
+                      help='- summarizes a users portfolio. example: $summary billjohn')
     async def port_sum(self, ctx, *, 
                        username: str=commands.parameter(description='- discord username')):
         try:
@@ -100,7 +99,7 @@ class PortfolioGame(commands.Cog):
     
     # buy a stock
     @commands.command(name='buy',
-                      help='- buy some shares!')
+                      help='- buy some shares! example: $buy QBTS')
     async def buy(self, ctx, 
                   ticker: str=commands.parameter(description='- stock ticker')):
         try:
@@ -132,7 +131,7 @@ class PortfolioGame(commands.Cog):
 
     # sell a stock
     @commands.command(name='sell',
-                      help='- sell some shares!')
+                      help='- sell some shares! example: $sell QBTS')
     async def sell(self, ctx,
                    ticker: str=commands.parameter(description='- stock ticker')):
         try:
@@ -169,7 +168,7 @@ class PortfolioGame(commands.Cog):
 
     # leaderboard
     @commands.command(name='rankings',
-                      help='- see how you stack up against the competition!')
+                      help='- see how you stack up against the competition! example: $rankings')
     async def rankings(self, ctx):
         try:
             response = f"Here are the current rankings as of {dt.datetime.now().strftime('%A %b %d %Y, %H:%M:%S')}\n\n"

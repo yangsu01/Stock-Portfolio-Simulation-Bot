@@ -13,7 +13,7 @@ class StockData(commands.Cog):
         self._last_member = None
     
     @commands.command(name='stonk', 
-                      help='- Shows stock price for the given period')
+                      help='- Shows stock price for the given period. example: $stonk QBTS 1mo')
     async def stonk(self, ctx, 
                     ticker: str=commands.parameter(description='- Stock ticker'), 
                     period: str=commands.parameter(description=f'- Time period {VALID_PERIODS}')):
@@ -25,7 +25,7 @@ class StockData(commands.Cog):
             await ctx.send(e)
 
     @commands.command(name='price',
-                        help='- current price of a stock')
+                      help='- current price of a stock. example: $price QBTS')
     async def price(self, ctx,
                     ticker: str=commands.parameter(description='- Stock ticker')):
         try:
@@ -35,7 +35,7 @@ class StockData(commands.Cog):
             await ctx.send(e)
 
     @commands.command(name='stonknews',
-                      help='- Sends a related news article for a given ticker')
+                      help='- Sends a related news article for a given ticker. example: $stonknews QBTS')
     async def news(self, ctx, 
                    ticker: str=commands.parameter(description='- Stock ticker')):
         try:
@@ -68,7 +68,7 @@ class StockData(commands.Cog):
     #         await ctx.send('Summary not available')
 
     @commands.command(name='stonkworth',
-                      help='- What an investment in the past would be worth today...')
+                      help='- What an investment in the past would be worth today... example: $stonkworth QBTS 1000 2020-01-01')
     async def worth(self, ctx,
                     ticker: str=commands.parameter(description="- stock ticker"),
                     amount: int=commands.parameter(description="- amount of initial investment"),

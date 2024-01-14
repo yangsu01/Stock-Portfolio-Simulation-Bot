@@ -9,14 +9,14 @@ class ToDoList(commands.Cog):
         self._last_member = None
 
     @commands.command(name='addtodo',
-                      help='- add an item to the list')
+                      help='- add an item to the list. example: $addtodo buy milk')
     async def add(self, ctx, *, 
                   item: str=commands.parameter(description='- item to be added')):
         add_item(ctx.message.author.name, item)
         await ctx.send('Item added')
 
     @commands.command(name='todolist',
-                      help='- shown todo list')
+                      help='- shows a users todo list. example: $todolist billjohn')
     async def list(self, ctx, *,
                    user: str=commands.parameter(description='- discord username')):
         try:
@@ -26,7 +26,7 @@ class ToDoList(commands.Cog):
             await ctx.send(e)
         
     @commands.command(name='complete',
-                      help='- complete an item on the list')
+                      help='- complete an item on the list. example: $complete')
     async def complete(self, ctx):
         try:
             data = get_list(ctx.message.author.name)
